@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Utils/toast.dart';
-import '../services/Auth/constants.dart';
-
-class LoginPage extends StatefulWidget {
-   LoginPage({super.key, this.toggle});
+class SignupPage extends StatefulWidget {
+  
   Function(bool)? toggle;
+
+  SignupPage({super.key,this.toggle});
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
+   
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  late final SharedPreferences prefs;
-
+  String? _email, _password;
   bool _isLoading = false;
 
   void _signIn() async {
@@ -30,48 +26,51 @@ class _LoginPageState extends State<LoginPage> {
       _formKey.currentState?.save();
 
       try {
-        var result = await _auth.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
+        await _auth.createUserWithEmailAndPassword(
+          email: _email ?? "",
+          password: _password ?? "",
         );
         // Navigate to home screen after successful login
-
+        // Navigator.pushReplacement(
+        //   context,
         //   MaterialPageRoute(
         //     builder: (context) => HomeScreen(),
         //   ),
         // );
-
-        // Obtain shared preferences.
-
-        await prefs.setString(appTocken, result.user?.uid ?? "");
-        successToast("Logged in");
-
         _isLoading = true;
-        Navigator.pushReplacementNamed(context, "/home");
       } catch (e) {
         setState(() {
           _isLoading = false;
         });
+        print("error");
         print(e.toString());
         // Handle login errors here
-        successToast("Failed to sign in. Please try again.");
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Error"),
+              content: Text("Failed to sign in. Please try again."),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
-  }
-
- 
-
-  @override
-  void initState() {
-    
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Sign up'),
       ),
       body: _isLoading
           ? Center(
@@ -80,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
           : Padding(
               padding: EdgeInsets.all(16.0),
               child: Form(
-                // autovalidateMode: AutovalidateMode.onUserInteraction,
                 key: _formKey,
                 child: Column(
                   children: [
@@ -93,25 +91,23 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      controller: emailController,
-                      // onSaved: (input) => emailController.text = input??"",
+                      onSaved: (input) => _email = input,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Password'),
                       obscureText: true,
-                      controller: passwordController,
                       validator: (input) {
                         if (input!.isEmpty) {
                           return 'Please provide a password';
                         }
                         return null;
                       },
-                      // onSaved: (input) => passwordController.text = input??"",
+                      onSaved: (input) => _password = input,
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: _signIn,
-                      child: Text('Sign In'),
+                      child: Text('Sign Up'),
                     ),
                   ],
                 ),
