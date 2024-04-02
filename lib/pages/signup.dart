@@ -1,118 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task/pages/home.dart';
 
+import '../BlockPattern/signup_cubit/signup_cubit.dart';
+import '../Utils/toast.dart';
+
+// ignore: must_be_immutable
 class SignupPage extends StatefulWidget {
-  
-  Function(bool)? toggle;
+  Function() toggle;
 
-  SignupPage({super.key,this.toggle});
+  SignupPage({super.key, required this.toggle});
   @override
+  // ignore: library_private_types_in_public_api
   _SignupPageState createState() => _SignupPageState();
 }
 
 class _SignupPageState extends State<SignupPage> {
-   
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String? _email, _password;
-  bool _isLoading = false;
-
-  void _signIn() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      _formKey.currentState?.save();
-
-      try {
-        await _auth.createUserWithEmailAndPassword(
-          email: _email ?? "",
-          password: _password ?? "",
-        );
-        // Navigate to home screen after successful login
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => HomeScreen(),
-        //   ),
-        // );
-        _isLoading = true;
-      } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
-        print("error");
-        print(e.toString());
-        // Handle login errors here
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Error"),
-              content: Text("Failed to sign in. Please try again."),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("OK"),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-  }
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext conte) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign up'),
+        title: const Text('Register'),
       ),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Email'),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (input) {
-                        if (input!.isEmpty) {
-                          return 'Please provide an email';
-                        }
-                        return null;
-                      },
-                      onSaved: (input) => _email = input,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Password'),
-                      obscureText: true,
-                      validator: (input) {
-                        if (input!.isEmpty) {
-                          return 'Please provide a password';
-                        }
-                        return null;
-                      },
-                      onSaved: (input) => _password = input,
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _signIn,
-                      child: Text('Sign Up'),
-                    ),
-                  ],
+      body: BlocProvider(
+        create: (contex) => SignupCubit(),
+        child: Builder(builder: (context) {
+          return BlocConsumer<SignupCubit, SignupCubitState>(
+            listener: (context, state) {
+              if (state is SignupCubitError) {
+                successToast(state.error);
+              }
+              if (state is SignupCubitLSuccess) {
+                successToast("Logged in");
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                    ));
+              }
+            },
+            builder: (context, state) {
+              if (state is SignupCubitLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  // autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: const InputDecoration(labelText: 'Email'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (input) {
+                          if (input!.isEmpty) {
+                            return 'Please provide an email';
+                          }
+                          return null;
+                        },
+                        controller: emailController,
+                        // onSaved: (input) => emailController.text = input??"",
+                      ),
+                      TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                        controller: passwordController,
+                        validator: (input) {
+                          if (input!.isEmpty) {
+                            return 'Please provide a password';
+                          }
+                          if (input.length < 5) {
+                            return 'Password is too short';
+                          }
+                          return null;
+                        },
+                        // onSaved: (input) => passwordController.text = input??"",
+                      ),
+                      const SizedBox(height: 20),
+                      TextButton(
+                          onPressed: () {
+                            widget.toggle();
+                          },
+                          child: const Text("Sign In")),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            _formKey.currentState?.save();
+                            context.read<SignupCubit>().Signup(
+                                emailController.text, passwordController.text);
+                          }
+                        },
+                        child: const Text('Register'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
+          );
+        }),
+      ),
     );
   }
 }

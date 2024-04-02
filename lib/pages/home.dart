@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,11 +19,19 @@ class _HomePageState extends State<HomePage> {
       body: ElevatedButton(
         onPressed: () {
           LocalStorage.setUserLoggedId(null);
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-builder: (context) => AuthCheckerPage()), (Route route) => false);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const AuthCheckerPage()),
+              (Route route) => false);
         },
-        child: Text("sign out"),
+        child: const Text("sign out"),
       ),
     );
+  }
+  Future<void> checkForPin() async {
+    String? value = await LocalStorage.getUserPin();
+    if (value == null) {
+      
+    }
+    setState(() {});
   }
 }

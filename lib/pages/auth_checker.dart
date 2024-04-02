@@ -16,7 +16,6 @@ class AuthCheckerPage extends StatefulWidget {
 
 class _AuthCheckerPageState extends State<AuthCheckerPage> {
 
-  late final SharedPreferences prefs;
    bool isSignIn = true;
   String? alreadyIn ;
   void toggle() {
@@ -30,13 +29,13 @@ class _AuthCheckerPageState extends State<AuthCheckerPage> {
     checkForLogedIn();
 
     return alreadyIn!=null
-        ? HomePage()
+        ? const HomePage()
         : isSignIn
             ? LoginPage(
-                // toggle: toggle,
+                toggle: toggle,
               )
             : SignupPage(
-              // toggle: toggle
+              toggle: toggle
               );
   }
 

@@ -15,4 +15,18 @@ class LocalStorage {
     final shared = await SharedPreferences.getInstance();
     return shared.getString(appTocken);
   }
+
+  static Future getUserPin() async {
+    final shared = await SharedPreferences.getInstance();
+    return shared.getString(pinLock);
+  }
+
+  static Future setUserPin(String? value) async {
+    final shared = await SharedPreferences.getInstance();
+    if (value == null) {
+      shared.remove(pinLock);
+    } else {
+      return shared.setString(pinLock, value);
+    }
+  }
 }
