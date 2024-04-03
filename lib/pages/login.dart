@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:task/pages/home.dart';
 import 'package:task/services/Repository/local_storage.dart';
 
 import '../BlockPattern/login_cubit/login_cubit.dart';
+import '../CommonWidgets/common_buttons.dart';
 import '../CommonWidgets/pin_login_prompt.dart';
 import '../Utils/toast.dart';
 
@@ -31,8 +33,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext conte) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
-      ),
+          // centerTitle: true,
+          // title: const Text('Login'),
+          ),
       body: BlocProvider(
         create: (contex) => LoginCubit(),
         child: Builder(builder: (context) {
@@ -59,60 +62,59 @@ class _LoginPageState extends State<LoginPage> {
               }
               return Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  // autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: 'Email'),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (input) {
-                          if (input!.isEmpty) {
-                            return 'Please provide an email';
-                          }
-                          return null;
-                        },
-                        controller: emailController,
-                        // onSaved: (input) => emailController.text = input??"",
-                      ),
-                      TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
-                        obscureText: true,
-                        controller: passwordController,
-                        validator: (input) {
-                          if (input!.isEmpty) {
-                            return 'Please provide a password';
-                          }
-                          return null;
-                        },
-                        // onSaved: (input) => passwordController.text = input??"",
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton(
-                          onPressed: () {
-                            widget.toggle();
+                child: SingleChildScrollView(
+                  child: Form(
+                    // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        const FlutterLogo(
+                          size: 120,
+                        ),
+                        const SizedBox(height: 48.0),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0)),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (input) {
+                            if (input!.isEmpty) {
+                              return 'Please provide an email';
+                            }
+                            return null;
                           },
-                          child: const Text("Register")),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (isPinAvailable)
-                            TextButton(
-                                onPressed: () {
-                                  _openPinLogin(
-                                    (pin) {
-                                      context
-                                          .read<LoginCubit>()
-                                          .logInWithPin(pin);
-                                      Navigator.pop(context);
-                                    },
-                                  );
-                                },
-                                child: const Text("Login with PIN")),
-                          ElevatedButton(
+                          controller: emailController,
+                          // onSaved: (input) => emailController.text = input??"",
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(32.0)),
+                          ),
+                          obscureText: true,
+                          controller: passwordController,
+                          validator: (input) {
+                            if (input!.isEmpty) {
+                              return 'Please provide a password';
+                            }
+                            return null;
+                          },
+                          // onSaved: (input) => passwordController.text = input??"",
+                        ),
+                        const SizedBox(height: 20),
+                        CommonTextButton(
+                            onPressed: () {
+                              widget.toggle();
+                            },
+                            child: const Text("Register")),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 60.dp,
+                          child: CommonButtonText(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState?.save();
@@ -121,11 +123,24 @@ class _LoginPageState extends State<LoginPage> {
                                     passwordController.text);
                               }
                             },
-                            child: const Text('LogIn'),
+                            child: 'LogIn',
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        if (isPinAvailable)
+                          TextButton(
+                              onPressed: () {
+                                _openPinLogin(
+                                  (pin) {
+                                    context
+                                        .read<LoginCubit>()
+                                        .logInWithPin(pin);
+                                    Navigator.pop(context);
+                                  },
+                                );
+                              },
+                              child: const Text("Login with PIN"))
+                      ],
+                    ),
                   ),
                 ),
               );

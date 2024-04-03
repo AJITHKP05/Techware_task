@@ -61,7 +61,6 @@ class _PinChangePromptState extends State<PinChangePrompt> {
             }
             if (state is PinSetSuccess) {
               successToast("Successful");
-              
             }
           },
           builder: (context, state) {
@@ -114,7 +113,6 @@ class _PinChangePromptState extends State<PinChangePrompt> {
                   CommonTextButton(
                     child: const Text("Cancel"),
                     onPressed: () {
-                      
                       Navigator.pop(context);
                     },
                   ),
@@ -124,12 +122,12 @@ class _PinChangePromptState extends State<PinChangePrompt> {
                     onPressed: () {},
                   )
                 else
-                  CommonButton(
-                    child: const Text("Change"),
+                  CommonButtonText(
+                    child: "Change",
                     onPressed: () {
                       if (controller.text.length == 4) {
                         context.read<PinSetCubit>().changePin(controller.text);
-                         Navigator.pop(context);
+                        Navigator.pop(context);
                       } else {
                         successToast("Please enter PIN");
                       }

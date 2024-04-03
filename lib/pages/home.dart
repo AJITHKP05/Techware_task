@@ -8,7 +8,7 @@ import '../CommonWidgets/add_product_fab.dart';
 import '../CommonWidgets/pin_change_prompt.dart';
 import '../CommonWidgets/pin_clear_switch.dart';
 import '../CommonWidgets/pin_set_propmt.dart';
-import '../CommonWidgets/qr_view.dart';
+import '../CommonWidgets/search_bar.dart';
 import '../services/Repository/firebase_repository.dart';
 import 'auth_checker.dart';
 import 'product_detail_page.dart';
@@ -54,17 +54,17 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           actions: <Widget>[
-            TextButton(
+            CommonTextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               child: const Text("Cancel"),
             ),
-            CommonButton(
+            CommonButtonText(
               onPressed: () {
                 signOut(keepPin);
               },
-              child: const Text("Exit"),
+              child: "Sign out",
             ),
           ],
         );
@@ -78,6 +78,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         floatingActionButton: const AddProductFab(),
         appBar: AppBar(
+          centerTitle: true,
           title: const Text("Products List"),
           actions: [
             PopupMenuButton<String>(
@@ -124,11 +125,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            // IconButton(
-            //     onPressed: () {
-            //       confirmExit(authPin != null);
-            //     },
-            //     icon: const Icon(Icons.exit_to_app))
           ],
         ),
         body: BlocProvider(
@@ -190,7 +186,7 @@ class _FirestoreDataWidgetState extends State<FirestoreDataWidget> {
           );
         } else if (state is FirestoreData) {
           if (state.documents.isEmpty) {
-            return const Text("Nothing to show, add a product");
+            return Image.asset("assets/empty.jpeg");
           }
           final filteredDocs = state.documents
               .where((doc) => doc['name']
@@ -203,33 +199,21 @@ class _FirestoreDataWidgetState extends State<FirestoreDataWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SearchBar(
-                    controller: _searchController,
-                    padding: const MaterialStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
-                    onChanged: (_) {
-                      setState(() {});
-                    },
-                    leading: const Icon(Icons.search),
-                    trailing: <Widget>[
-                      IconButton(
-                        icon: const Icon(Icons.qr_code),
-                        onPressed: ()async {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => QRScanner(
-                              onDetect: (p0) {
-                                _searchController.text = p0 ?? "";
-                                setState(() {});
-                              },
-                            ),
-                          ));
-                        },
-                      )
-                    ]),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: SearchBarWidget(
+                      searchController: _searchController,
+                      onChanged: () {
+                        setState(() {});
+                      }),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 (filteredDocs.isEmpty)
-                    ? const Padding(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: Text("Nothing to show, add a product"),
+                    ? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Image.asset("assets/empty.jpeg"),
                       )
                     : ListView.builder(
                         shrinkWrap: true,
@@ -237,17 +221,28 @@ class _FirestoreDataWidgetState extends State<FirestoreDataWidget> {
                         itemCount: filteredDocs.length,
                         itemBuilder: (context, index) {
                           final document = filteredDocs[index];
-                          return ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProductDetailPage(data: document),
-                                  ));
-                            },
-                            title: Text(document["name"]),
-                            subtitle: Text(document['measurement']),
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                foregroundImage: NetworkImage(
+                                    "https://ui-avatars.com/api/?name=${document["name"]}"),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              tileColor: Colors.blueGrey[200],
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProductDetailPage(data: document),
+                                    ));
+                              },
+                              trailing: const Icon(Icons.arrow_forward_ios),
+                              title: Text(document["name"]),
+                              subtitle: Text(document['measurement']),
+                            ),
                           );
                         },
                       ),

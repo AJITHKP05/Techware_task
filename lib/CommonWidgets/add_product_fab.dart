@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task/Utils/toast.dart';
 import 'package:task/model/product.dart';
@@ -90,17 +91,16 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   },
                 ),
                 const SizedBox(height: 8.0),
-                TextFormField(
+                TextFormField(inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+          ],
                   controller: _priceController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Price'),
+                  decoration: const InputDecoration(labelText: 'Price', ),
                   validator: (value) {
                     if (value == "") {
                       return 'Please enter price';
                     }
-                    // if (double.tryParse(value) == null) {
-                    //   return 'Please enter a valid price';
-                    // }
                     return null;
                   },
                 ),
@@ -110,23 +110,22 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                       ? null
                       : () {
                           if (_formKey.currentState!.validate()) {
-                            // Handle adding the product here
                             String productName = _productNameController.text;
                             String measurement = _measurementController.text;
                             double price = double.parse(_priceController.text);
 
-                            // You can perform further actions with validated data here
                             context.read<ProductAddCubit>().addProduct(Product(
                                 measurement: measurement,
                                 name: productName,
                                 price: price));
-                            
-                            
                           }
                         },
                   child: (state is ProductAddLoading)
                       ? const CircularProgressIndicator()
-                      : const Text('Add'),
+                      : const Text(
+                          'Add',
+                          style: TextStyle(color: Colors.blueAccent),
+                        ),
                 ),
               ],
             ),

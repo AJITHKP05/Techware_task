@@ -53,7 +53,7 @@ class _PinLoginPromptState extends State<PinLoginPrompt> {
     return AlertDialog(
       title: const Text('Login using PIN'),
       content: SizedBox(
-        height: 200,
+        height: 130,
         child: Pinput(
           length: 4,
           controller: controller,
@@ -91,8 +91,7 @@ class _PinLoginPromptState extends State<PinLoginPrompt> {
             Navigator.pop(context);
           },
         ),
-        CommonButton(
-          child: const Text("Set"),
+        CommonButtonText(
           onPressed: () {
             if (controller.text.length == 4) {
               widget.onLogin(controller.text);
@@ -100,6 +99,7 @@ class _PinLoginPromptState extends State<PinLoginPrompt> {
               successToast("Please enter PIN");
             }
           },
+          child: "Login",
         ),
       ],
     );
