@@ -5,6 +5,7 @@ class PinClearSwitch extends StatefulWidget {
 
   const PinClearSwitch({super.key, required this.onChange});
   @override
+  // ignore: library_private_types_in_public_api
   _PinClearSwitchState createState() => _PinClearSwitchState();
 }
 
@@ -18,9 +19,9 @@ class _PinClearSwitchState extends State<PinClearSwitch> {
       children: <Widget>[
         Text(
           _switchValue ? 'Keep the PIN ' : 'Clear the PIN ',
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Switch(
           value: _switchValue,
           onChanged: (value) {

@@ -39,8 +39,6 @@ class _AuthCheckerPageState extends State<AuthCheckerPage> {
 
   Future<void> checkForLogedIn() async {
     String? value = await LocalStorage.getUserLoggedId();
-    String? pinValue = await LocalStorage.getUserPin();
-    print("$alreadyIn $pinValue  hhh");
     if (value != null ) {
       alreadyIn = "true";
     } else {

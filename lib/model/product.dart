@@ -12,10 +12,10 @@ class Product {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['measurement'] = this.measurement;
-    data['price'] = this.price;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['name'] = name;
+    data['measurement'] = measurement;
+    data['price'] = price;
     return data;
   }
 }

@@ -36,15 +36,16 @@ class AddProductBottomSheet extends StatefulWidget {
   const AddProductBottomSheet({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddProductBottomSheetState createState() => _AddProductBottomSheetState();
 }
 
 class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _productNameController = TextEditingController();
-  TextEditingController _measurementController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  final TextEditingController _productNameController = TextEditingController();
+  final TextEditingController _measurementController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
