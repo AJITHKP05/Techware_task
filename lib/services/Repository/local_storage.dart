@@ -29,4 +29,14 @@ class LocalStorage {
       return shared.setString(pinLock, value);
     }
   }
+
+  static Future isPinPromptShown() async {
+    final shared = await SharedPreferences.getInstance();
+    return shared.getBool(pinLockPrompt);
+  }
+
+  static Future setPinPromptShown(bool value) async {
+    final shared = await SharedPreferences.getInstance();
+    return shared.setBool(pinLockPrompt, value);
+  }
 }

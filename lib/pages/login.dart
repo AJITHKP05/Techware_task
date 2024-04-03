@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task/pages/home.dart';
+import 'package:task/services/Repository/local_storage.dart';
 
 import '../BlockPattern/login_cubit/login_cubit.dart';
+import '../CommonWidgets/pin_login_prompt.dart';
 import '../Utils/toast.dart';
 
 // ignore: must_be_immutable
@@ -18,6 +20,12 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isPinAvailable = false;
+  @override
+  void initState() {
+    checkForPin();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext conte) {
@@ -31,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
           return BlocConsumer<LoginCubit, LoginCubitState>(
             listener: (context, state) {
               if (state is LoginCubitError) {
+                successToast(state.error);
+              }
+              if (state is LoginPinCubitError) {
                 successToast(state.error);
               }
               if (state is LoginCubitLoggedIn) {
@@ -85,15 +96,34 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: const Text("Register")),
                       const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState?.save();
-                            context.read<LoginCubit>().logIn(
-                                emailController.text, passwordController.text);
-                          }
-                        },
-                        child: const Text('Sign In'),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (isPinAvailable)
+                            TextButton(
+                                onPressed: () {
+                                  _openPinLogin(
+                                    (pin) {
+                                      context
+                                          .read<LoginCubit>()
+                                          .logInWithPin(pin);
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                                child: const Text("Login with PIN")),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState?.save();
+                                context.read<LoginCubit>().logIn(
+                                    emailController.text,
+                                    passwordController.text);
+                              }
+                            },
+                            child: const Text('LogIn'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -103,6 +133,29 @@ class _LoginPageState extends State<LoginPage> {
           );
         }),
       ),
+    );
+  }
+
+  Future checkForPin() async {
+    await LocalStorage.getUserPin().then((value) {
+      if (value != null) {
+        isPinAvailable = true;
+        setState(() {});
+      } else {
+        isPinAvailable = false;
+      }
+    });
+  }
+
+  void _openPinLogin(Function(String) onLogin) {
+    showDialog(
+      // ignore: use_build_context_synchronously
+      context: context, barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PinLoginPrompt(
+          onLogin: onLogin,
+        );
+      },
     );
   }
 }

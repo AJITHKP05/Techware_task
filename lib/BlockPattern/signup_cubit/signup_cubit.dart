@@ -9,9 +9,9 @@ part 'signup_cubit_state.dart';
 class SignupCubit extends Cubit<SignupCubitState> {
   SignupCubit() : super(SignupCubitInitial());
   final fire = FirebaseRepository();
-  Future Signup(email, password) async {
+  Future signup(email, password) async {
     emit(SignupCubitLoading());
-    fire.SignupUsinEmail(email, password).then((value) {
+    fire.signupUsingEmail(email, password).then((value) {
       if (value == signedUp) {
         return emit(SignupCubitLSuccess());
       } else {

@@ -93,7 +93,7 @@ class _SignupPageState extends State<SignupPage> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState?.save();
-                            context.read<SignupCubit>().Signup(
+                            context.read<SignupCubit>().signup(
                                 emailController.text, passwordController.text);
                           }
                         },

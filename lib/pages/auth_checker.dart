@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task/pages/home.dart';
 import 'package:task/pages/login.dart';
 import 'package:task/pages/signup.dart';
-
-import '../services/Auth/constants.dart';
 import '../services/Repository/local_storage.dart';
 
 class AuthCheckerPage extends StatefulWidget {

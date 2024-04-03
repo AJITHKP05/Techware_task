@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:task/services/Repository/local_storage.dart';
 
 import '../../services/Auth/constants.dart';
 import '../../services/Repository/firebase_repository.dart';
@@ -26,6 +27,18 @@ class LoginCubit extends Cubit<LoginCubitState> {
           return emit(
               LoginCubitError(error: "Failed to sign in. Please try again."));
         }
+      }
+    });
+  }
+
+  void logInWithPin(String pin) {
+    emit(LoginCubitLoading());
+    LocalStorage.getUserPin().then((value) {
+      if (value == pin) {
+        LocalStorage.setPinPromptShown(true);
+       return emit(LoginCubitLoggedIn());
+      } else {
+       return emit(LoginPinCubitError(error: "Failed"));
       }
     });
   }

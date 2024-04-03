@@ -20,7 +20,7 @@ class FirebaseRepository {
     }
   }
 
-  Future SignupUsinEmail(email, password) async {
+  Future signupUsingEmail(email, password) async {
     try {
       var result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -30,5 +30,9 @@ class FirebaseRepository {
     } catch (e) {
       return e;
     }
+  }
+
+  Future signout() async {
+    _auth.signOut();
   }
 }
