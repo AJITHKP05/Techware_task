@@ -9,14 +9,14 @@ import '../BlockPattern/PinSet_cubit/pin_set_cubit.dart';
 import '../Utils/toast.dart';
 import 'common_buttons.dart';
 
-class PinSetPrompt extends StatefulWidget {
-  const PinSetPrompt({super.key, required this.onSet});
-  final Function() onSet;
+class PinChangePrompt extends StatefulWidget {
+  const PinChangePrompt({super.key});
+
   @override
-  _PinSetPromptState createState() => _PinSetPromptState();
+  _PinChangePromptState createState() => _PinChangePromptState();
 }
 
-class _PinSetPromptState extends State<PinSetPrompt> {
+class _PinChangePromptState extends State<PinChangePrompt> {
   final controller = TextEditingController();
   final focusNode = FocusNode();
 
@@ -60,13 +60,13 @@ class _PinSetPromptState extends State<PinSetPrompt> {
               successToast("Something went wrong..!");
             }
             if (state is PinSetSuccess) {
-              // Navigator.pop(context);
               successToast("Successful");
+              
             }
           },
           builder: (context, state) {
             return AlertDialog(
-              title: const Text('Set a PIN'),
+              title: const Text('Change PIN'),
               content: SizedBox(
                 height: 150,
                 child: Column(
@@ -112,9 +112,9 @@ class _PinSetPromptState extends State<PinSetPrompt> {
               actions: [
                 if (state is! PinSetLoading)
                   CommonTextButton(
-                    child: const Text("Skip"),
+                    child: const Text("Cancel"),
                     onPressed: () {
-                      context.read<PinSetCubit>().skipPin();
+                      
                       Navigator.pop(context);
                     },
                   ),
@@ -125,13 +125,11 @@ class _PinSetPromptState extends State<PinSetPrompt> {
                   )
                 else
                   CommonButton(
-                    child: const Text("Set"),
+                    child: const Text("Change"),
                     onPressed: () {
                       if (controller.text.length == 4) {
-                        Navigator.pop(context);
-                        context.read<PinSetCubit>().setPin(controller.text);
-
-                        widget.onSet();
+                        context.read<PinSetCubit>().changePin(controller.text);
+                         Navigator.pop(context);
                       } else {
                         successToast("Please enter PIN");
                       }

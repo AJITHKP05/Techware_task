@@ -22,4 +22,15 @@ class PinSetCubit extends Cubit<PinSetState> {
   Future skipPin() async {
      LocalStorage.setPinPromptShown(true);
   }
+
+  Future changePin(String text)async {
+    emit(PinSetLoading());
+    try {
+      LocalStorage.setUserPin(text);
+      LocalStorage.setPinPromptShown(true);
+      emit(PinSetSuccess());
+    } catch (e) {
+      emit(PinSetError(error: "Something went wrong"));
+    }
+  }
 }
