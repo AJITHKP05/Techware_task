@@ -57,11 +57,11 @@ class _PinSetPromptState extends State<PinSetPrompt> {
         return BlocConsumer<PinSetCubit, PinSetState>(
           listener: (context, state) {
             if (state is PinSetError) {
-              successToast("Something went wrong..!");
+              errorToast("Something went wrong..!",context);
             }
             if (state is PinSetSuccess) {
               // Navigator.pop(context);
-              successToast("Successful");
+              successToast("Successful",context);
             }
           },
           builder: (context, state) {
@@ -133,7 +133,7 @@ class _PinSetPromptState extends State<PinSetPrompt> {
 
                         widget.onSet();
                       } else {
-                        successToast("Please enter PIN");
+                        successToast("Please enter PIN",context);
                       }
                     },
                   ),

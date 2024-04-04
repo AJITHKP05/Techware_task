@@ -42,13 +42,13 @@ class _LoginPageState extends State<LoginPage> {
           return BlocConsumer<LoginCubit, LoginCubitState>(
             listener: (context, state) {
               if (state is LoginCubitError) {
-                successToast(state.error);
+                errorToast(state.error, context);
               }
               if (state is LoginPinCubitError) {
-                successToast(state.error);
+                errorToast(state.error, context);
               }
               if (state is LoginCubitLoggedIn) {
-                successToast("Logged in");
+                successToast("Logged in", context);
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -83,6 +83,11 @@ class _LoginPageState extends State<LoginPage> {
                             if (input!.isEmpty) {
                               return 'Please provide an email';
                             }
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(input)) {
+                              return "Please provide a valid email";
+                            }
                             return null;
                           },
                           controller: emailController,
@@ -110,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: () {
                               widget.toggle();
                             },
-                            child: const Text("Register")),
+                            child: const Text("Dont have an account ")),
                         const SizedBox(height: 20),
                         SizedBox(
                           width: 60.dp,
@@ -138,7 +143,10 @@ class _LoginPageState extends State<LoginPage> {
                                   },
                                 );
                               },
-                              child: const Text("Login with PIN"))
+                              child: const Text(
+                                "Login with PIN",
+                                style: TextStyle(color: Colors.blueAccent),
+                              ))
                       ],
                     ),
                   ),

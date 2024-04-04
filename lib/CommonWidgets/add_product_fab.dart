@@ -53,11 +53,11 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
     return BlocConsumer<ProductAddCubit, ProductAddState>(
       listener: (context, state) {
         if (state is ProductAddSuccess) {
-          successToast("Product added");
+          successToast("Product added", context);
           Navigator.pop(context);
         }
         if (state is ProductAddError) {
-          successToast(state.error);
+          errorToast(state.error, context);
         }
       },
       builder: (context, state) {
@@ -91,16 +91,24 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   },
                 ),
                 const SizedBox(height: 8.0),
-                TextFormField(inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
-          ],
+                TextFormField(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r"[0-9.]")),
+                  ],
                   controller: _priceController,
+                  
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Price', ),
+                  decoration: const InputDecoration(
+                    labelText: 'Price',
+                  ),
                   validator: (value) {
                     if (value == "") {
                       return 'Please enter price';
                     }
+                    if (!RegExp(r'^-?\d*\.?\d+$').hasMatch(value ?? "")) {
+                      return "Please provide a valid value";
+                    }
+
                     return null;
                   },
                 ),
@@ -109,16 +117,19 @@ class _AddProductBottomSheetState extends State<AddProductBottomSheet> {
                   onPressed: (state is ProductAddLoading)
                       ? null
                       : () {
-                          if (_formKey.currentState!.validate()) {
-                            String productName = _productNameController.text;
-                            String measurement = _measurementController.text;
-                            double price = double.parse(_priceController.text);
+                          
+                            if (_formKey.currentState!.validate()) {
+                              String productName = _productNameController.text;
+                              String measurement = _measurementController.text;
+                              double price =
+                                  double.parse(_priceController.text);
 
-                            context.read<ProductAddCubit>().addProduct(Product(
-                                measurement: measurement,
-                                name: productName,
-                                price: price));
-                          }
+                              context.read<ProductAddCubit>().addProduct(
+                                  Product(
+                                      measurement: measurement,
+                                      name: productName,
+                                      price: price));
+                            }
                         },
                   child: (state is ProductAddLoading)
                       ? const CircularProgressIndicator()

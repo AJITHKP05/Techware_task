@@ -96,7 +96,7 @@ class _PinLoginPromptState extends State<PinLoginPrompt> {
             if (controller.text.length == 4) {
               widget.onLogin(controller.text);
             } else {
-              successToast("Please enter PIN");
+              successToast("Please enter PIN",context);
             }
           },
           child: "Login",

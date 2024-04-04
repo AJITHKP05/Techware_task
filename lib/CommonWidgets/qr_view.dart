@@ -10,10 +10,14 @@ class QRScanner extends StatefulWidget {
 
 class _QRScannerState extends State<QRScanner> {
   bool viewQRScanner = true;
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Scan your QR code"),
         actions: [
           IconButton(
               onPressed: () {
@@ -23,13 +27,14 @@ class _QRScannerState extends State<QRScanner> {
         ],
       ),
       body: MobileScanner(
-        // fit: BoxFit.contain,
+        fit: BoxFit.contain,
+        // scanWindow:
+            // Rect.fromCenter(center: Offset(20, 20), width: 50, height: 100),
         onDetect: (capture) {
           final List<Barcode> barcodes = capture.barcodes;
           for (final barcode in barcodes) {
             debugPrint('Barcode found! ${barcode.rawValue}');
             if (barcode.rawValue is String) {
-              
               if (viewQRScanner && barcode.rawValue is String) {
                 viewQRScanner = false;
                 widget.onDetect(barcode.rawValue);

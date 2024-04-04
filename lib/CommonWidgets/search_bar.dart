@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'qr_view.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final TextEditingController searchController;
   final Function() onChanged;
-  const SearchBarWidget({super.key, required this.searchController, required this.onChanged});
+   final Function() onIconClick;
+  const SearchBarWidget({super.key, required this.searchController, required this.onChanged, required this.onIconClick});
 
   @override
   State<SearchBarWidget> createState() => _SearchBarWidgetState();
@@ -25,16 +25,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         trailing: <Widget>[
           IconButton(
             icon: const Icon(Icons.qr_code),
-            onPressed: () async {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => QRScanner(
-                  onDetect: (p0) {
-                    widget.searchController.text = p0 ?? "";
-                     widget.onChanged();
-                  },
-                ),
-              ));
-            },
+            onPressed: widget.onIconClick
           )
         ]);
   }

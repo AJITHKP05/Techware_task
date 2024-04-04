@@ -34,10 +34,10 @@ class _SignupPageState extends State<SignupPage> {
           return BlocConsumer<SignupCubit, SignupCubitState>(
             listener: (context, state) {
               if (state is SignupCubitError) {
-                successToast(state.error);
+                errorToast(state.error, context);
               }
               if (state is SignupCubitLSuccess) {
-                successToast("Logged in");
+                successToast("Logged in", context);
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -102,7 +102,7 @@ class _SignupPageState extends State<SignupPage> {
                             onPressed: () {
                               widget.toggle();
                             },
-                            child: const Text("Sign In")),
+                            child: const Text("Already have an account")),
                         const SizedBox(height: 20),
                         SizedBox(
                             width: 60.dp,
