@@ -235,7 +235,6 @@ class _FirestoreDataWidgetState extends State<FirestoreDataWidget> {
                           ));
                         } else {
                           openAppSettings();
-                          successToast("Camera Permisssion needed",context);
                         }
                       },
                       searchController: _searchController,

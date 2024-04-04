@@ -72,6 +72,11 @@ class _SignupPageState extends State<SignupPage> {
                             if (input!.isEmpty) {
                               return 'Please provide an email';
                             }
+                            if (!RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(input)) {
+                              return "Please provide a valid email";
+                            }
                             return null;
                           },
                           controller: emailController,
@@ -90,7 +95,7 @@ class _SignupPageState extends State<SignupPage> {
                             if (input!.isEmpty) {
                               return 'Please provide a password';
                             }
-                            if (input.length < 5) {
+                            if (input.length < 6) {
                               return 'Password is too short';
                             }
                             return null;

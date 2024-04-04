@@ -18,6 +18,9 @@ class SignupCubit extends Cubit<SignupCubitState> {
         if (value.code == "invalid-credential") {
           return emit(SignupCubitError(error: "Invalid credentials"));
         }
+         if (value.code == "email-already-in-use") {
+          return emit(SignupCubitError(error: "The email address is already in use by another account"));
+        }
         if (value.code == "too-many-requests") {
           return emit(
               SignupCubitError(error: "Too many requests, Please try later"));

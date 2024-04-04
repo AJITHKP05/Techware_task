@@ -57,17 +57,17 @@ class _PinChangePromptState extends State<PinChangePrompt> {
         return BlocConsumer<PinSetCubit, PinSetState>(
           listener: (context, state) {
             if (state is PinSetError) {
-              errorToast("Something went wrong..!",context);
+              errorToast("Something went wrong..!", context);
             }
             if (state is PinSetSuccess) {
-              successToast("Successful",context);
+              successToast("Successful", context);
             }
           },
           builder: (context, state) {
             return AlertDialog(
               title: const Text('Change PIN'),
               content: SizedBox(
-                height: 150,
+                height: 120,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -129,7 +129,7 @@ class _PinChangePromptState extends State<PinChangePrompt> {
                         context.read<PinSetCubit>().changePin(controller.text);
                         Navigator.pop(context);
                       } else {
-                        errorToast("Please enter PIN",context);
+                        errorToast("Please enter PIN", context);
                       }
                     },
                   ),
